@@ -1,0 +1,15 @@
+Diagnostics:
+  ClangTidy:
+    Add: [modernize-*, bugprone-*, performance-*]
+    Remove: [modernize-use-trailing-return-type]
+
+InlayHints:
+  Enabled: Yes
+  ParameterNames: Yes
+  DeducedTypes: Yes
+
+Completion:
+  AllScopes: Yes
+
+Index:
+  Background: Build

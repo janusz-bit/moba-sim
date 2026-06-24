@@ -1,0 +1,8 @@
+# Build artifacts
+/build
+/build-windows
+/result
+
+# Generated for clangd/Zed
+/compile_commands.json
+/.cache/clangd
