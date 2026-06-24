@@ -5,4 +5,4 @@
 
 # Generated for clangd/Zed
 /compile_commands.json
-/.cache/clangd
+/.cache
