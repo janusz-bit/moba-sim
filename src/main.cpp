@@ -1,12 +1,13 @@
 #include <iostream>
 
+namespace moba {
+using type = double;
 
-class Champion
-{
-
+struct Resistances {
+  type magic_resistance;
 };
 
-int main() {
-    std::cout << "Hello from moba-sim!\n";
+class WithHP {};
+} // namespace moba
 
-}
+int main() { std::cout << "Hello from moba-sim!\n"; }
