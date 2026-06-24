@@ -5,12 +5,11 @@ C++ project cross-compiled for Linux and Windows using [Nix Flakes](https://wiki
 ## Requirements
 
 - [Nix](https://nixos.org/download/) with flakes enabled
-- Zed editor (optional, for IDE integration)
 
 ## Quick start
 
 ```sh
-# Enter dev shell (gcc, mingw, cmake, clangd, lldb)
+# Enter dev shell (clang, mingw, cmake, clangd, lldb)
 nix develop
 
 # Build for Linux
@@ -27,11 +26,13 @@ file result/bin/moba-sim.exe   # PE32+ executable
 | Command | Description |
 |---|---|
 | `nix develop` | Dev shell with both toolchains + clangd |
-| `nix build .#default` | Build Linux ELF binary |
+| `nix build .#default` | Build Linux ELF binary (clang) |
 | `nix build .#windows` | Cross-compile Windows `.exe` (MinGW-w64) |
 | `nix run .#buildWindows` | Build Windows + print output listing |
 | `nix flake check` | Validate flake outputs |
 | `nix flake update` | Update flake inputs |
+| `./build.sh` | Regenerate `compile_commands.json` (Linux toolchain) |
+| `./build.sh windows` | Regenerate `compile_commands.json` (mingw toolchain) |
 
 ## Project structure
 
@@ -39,35 +40,44 @@ file result/bin/moba-sim.exe   # PE32+ executable
 .
 ├── flake.nix          # flake-parts flake: Linux + Windows cross-compile
 ├── flake.lock         # Pinned nixpkgs + flake-parts revisions
-├── CMakeLists.txt     # CMake config (C++17, exports compile_commands.json)
+├── CMakeLists.txt     # CMake config (C++23, self-contained compile_commands.json)
 ├── build.sh           # Generate compile_commands.json for clangd
-├── .zed/settings.json # Zed editor LSP config (clangd + query-driver)
+├── .clangd            # clangd config (diagnostics, inlay hints, completion, index)
 ├── src/main.cpp       # Demo app detecting platform
 └── .gitignore
 ```
 
-## Zed editor integration
+## Editor integration (clangd)
 
-clangd (C++ language server) reads `compile_commands.json` to resolve include paths from the Nix toolchain.
-
-### Setup
+clangd reads `compile_commands.json` to resolve include paths and compiler flags.
 
 ```sh
 nix develop
-./build.sh           # generates compile_commands.json (Linux toolchain)
+./build.sh           # Linux toolchain
 # or
-./build.sh windows   # generates compile_commands.json (mingw toolchain)
+./build.sh windows   # mingw toolchain
 ```
 
-Then open the project in Zed — clangd provides completion, diagnostics, and go-to-definition using the Nix store toolchain paths.
+On NixOS the `clang++` wrapper injects standard-library include paths via `NIX_CFLAGS_COMPILE` at compile time. These implicit paths normally don't end up in `compile_commands.json`, so any editor launching clangd outside `nix develop` fails to find `<iostream>` and similar.
 
-`.zed/settings.json` configures clangd with `--query-driver=/nix/store/**/g++` so it can invoke the Nix-wrapped compiler driver to discover system include paths.
+`CMakeLists.txt` works around this by emitting the compiler's implicit include directories as explicit `-isystem` flags:
+
+```cmake
+if(CMAKE_EXPORT_COMPILE_COMMANDS)
+  set(CMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES
+      ${CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES})
+endif()
+```
+
+This makes `compile_commands.json` self-contained — clangd resolves headers correctly whether or not it's launched from inside the nix shell. No `--query-driver` or per-editor config is needed.
+
+`.clangd` tunes diagnostics (clang-tidy checks), inlay hints, completion, and the background/standard-library index.
 
 ## How cross-compilation works
 
 The flake defines two packages via a shared `buildCpp` helper:
 
-- **`.#default`** — native Linux build using `pkgs.stdenv` (GCC)
+- **`.#default`** — native Linux build using `pkgs.clangStdenv` (clang)
 - **`.#windows`** — Windows cross-compile using `pkgs.pkgsCross.mingwW64.stdenv` (MinGW-w64)
 
 Both use the same `CMakeLists.txt` and source. CMake's `WIN32` guard static-links the MinGW runtime to reduce DLL dependencies.
