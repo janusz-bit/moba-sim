@@ -4,15 +4,29 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
+    git-hooks-nix = {
+      inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:cachix/git-hooks.nix";
+    };
   };
 
   outputs =
     { flake-parts, ... }@inputs:
     flake-parts.lib.mkFlake { inherit inputs; } {
+
+      imports = [
+        inputs.git-hooks-nix.flakeModule
+      ];
+
       systems = [ "x86_64-linux" ];
 
       perSystem =
-        { pkgs, self', ... }:
+        { config
+        , pkgs
+        , lib
+        , self'
+        , ...
+        }:
         let
           name = "moba-sim";
           windowsPkgs = pkgs.pkgsCross.mingwW64;
@@ -52,6 +66,16 @@
             '';
         in
         {
+          pre-commit.settings.hooks = {
+            nixpkgs-fmt.enable = true;
+            clang-format = {
+              enable = true;
+              types_or = lib.mkForce [ "c++" ];
+            };
+            end-of-file-fixer.enable = true;
+            trim-trailing-whitespace.enable = true;
+          };
+
           packages = {
             default = buildCpp pkgs.clangStdenv;
             windows = buildCpp pkgs.pkgsCross.mingwW64.stdenv;
@@ -63,16 +87,21 @@
           };
 
           devShells.default = pkgs.mkShell.override { stdenv = pkgs.clangStdenv; } {
-            packages = with pkgs; [
-              cmake
-              ninja
-              clang
-              pkgs.pkgsCross.mingwW64.buildPackages.gcc
-              wine64
-              clang-tools
-              lldb
-              boost
-            ];
+            shellHook = ''
+              ${config.pre-commit.shellHook}
+            '';
+            packages =
+              (with pkgs; [
+                cmake
+                ninja
+                clang
+                pkgs.pkgsCross.mingwW64.buildPackages.gcc
+                wine64
+                clang-tools
+                lldb
+                boost
+              ])
+              ++ config.pre-commit.settings.enabledPackages;
           };
         };
     };
