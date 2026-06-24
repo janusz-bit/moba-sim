@@ -20,9 +20,13 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
+find_package(Boost 1.70 CONFIG REQUIRED)
+message(STATUS "Boost ${Boost_VERSION} found at ${Boost_DIR}")
+
 add_executable(moba-sim
   src/main.cpp
 )
+target_link_libraries(moba-sim PRIVATE Boost::headers)
 
 # Windows-specific: static link runtime to avoid DLL dependencies
 if(WIN32)

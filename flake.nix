@@ -26,6 +26,9 @@
                 pkgs.cmake
                 pkgs.ninja
               ];
+              buildInputs = [
+                pkgs.boost
+              ];
               cmakeFlags = [
                 "-G"
                 "Ninja"
@@ -68,6 +71,7 @@
               wine64
               clang-tools
               lldb
+              boost
             ];
           };
         };
