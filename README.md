@@ -28,8 +28,7 @@ file result/bin/moba-sim.exe   # PE32+ executable
 | `nix develop` | Dev shell with both toolchains + clangd |
 | `nix build .#default` | Build Linux ELF binary (clang) |
 | `nix build .#windows` | Cross-compile Windows `.exe` (MinGW-w64) |
-| `nix run .#buildWindows` | Build Windows + print output listing |
-| `nix flake check` | Validate flake outputs |
+| `nix flake check` | Validate flake outputs + run Wine test of `.exe` |
 | `nix flake update` | Update flake inputs |
 | `./build.sh` | Regenerate `compile_commands.json` (Linux toolchain) |
 | `./build.sh windows` | Regenerate `compile_commands.json` (mingw toolchain) |
@@ -81,3 +80,5 @@ The flake defines two packages via a shared `buildCpp` helper:
 - **`.#windows`** — Windows cross-compile using `pkgs.pkgsCross.mingwW64.stdenv` (MinGW-w64)
 
 Both use the same `CMakeLists.txt` and source. CMake's `WIN32` guard static-links the MinGW runtime to reduce DLL dependencies.
+
+The `checks.windows` derivation runs the cross-compiled `.exe` through Wine (`hostPlatform.emulator`, like the [nix.dev cross-compilation tutorial](https://nix.dev/tutorials/cross-compilation)) and verifies the output contains the expected greeting. Run it with `nix flake check`.

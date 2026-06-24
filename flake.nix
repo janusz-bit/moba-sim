@@ -12,9 +12,10 @@
       systems = [ "x86_64-linux" ];
 
       perSystem =
-        { pkgs, ... }:
+        { pkgs, self', ... }:
         let
           name = "moba-sim";
+          windowsPkgs = pkgs.pkgsCross.mingwW64;
 
           buildCpp =
             stdenv:
@@ -37,11 +38,25 @@
                 runHook postInstall
               '';
             };
+
+          runCheck =
+            name: exe:
+            pkgs.runCommand "check-${name}" { } ''
+              HOME=$PWD
+              ${exe} > $out
+              cat $out
+              grep -q "Hello from moba-sim!" $out
+            '';
         in
         {
           packages = {
             default = buildCpp pkgs.clangStdenv;
             windows = buildCpp pkgs.pkgsCross.mingwW64.stdenv;
+          };
+
+          checks = {
+            linux = runCheck "linux" "${self'.packages.default}/bin/moba-sim";
+            windows = runCheck "windows-exe" "${windowsPkgs.stdenv.hostPlatform.emulator windowsPkgs.buildPackages} ${self'.packages.windows}/bin/moba-sim.exe";
           };
 
           devShells.default = pkgs.mkShell.override { stdenv = pkgs.clangStdenv; } {
@@ -54,19 +69,6 @@
               clang-tools
               lldb
             ];
-          };
-
-          apps.buildWindows = {
-            type = "app";
-            program =
-              (pkgs.writeShellScriptBin "build-windows" ''
-                set -euo pipefail
-                echo "Building Windows .exe via cross-compilation..."
-                nix build .#windows
-                echo "Done. Output:"
-                ls -la result/bin/
-              '')
-              + "/bin/build-windows";
           };
         };
     };
