@@ -72,6 +72,15 @@
               enable = true;
               types_or = lib.mkForce [ "c++" ];
             };
+            clang-tidy = {
+              enable = true;
+              types_or = lib.mkForce [ "c++" ];
+              # Point clang-tidy at the CMake-generated compile database and let
+              # the project-level .clang-tidy file drive the check selection.
+              entry = lib.mkForce
+                "${pkgs.clang-tools}/bin/clang-tidy -p build";
+              pass_filenames = true;
+            };
             end-of-file-fixer.enable = true;
             trim-trailing-whitespace.enable = true;
           };

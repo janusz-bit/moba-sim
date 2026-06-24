@@ -1,0 +1,58 @@
+Checks: >
+  -*,
+  modernize-*,
+  bugprone-*,
+  performance-*,
+  portability-*,
+  readability-*,
+  cert-*,
+  cppcoreguidelines-*,
+  -modernize-use-trailing-return-type,
+  -readability-identifier-length,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -readability-magic-numbers,
+  -cppcoreguidelines-avoid-non-const-global-variables,
+  -cert-err58-cpp,
+  -bugprone-easily-swappable-parameters,
+  -cppcoreguidelines-pro-bounds-pointer-arithmetic,
+  -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
+  -cppcoreguidelines-owning-memory,
+  -cppcoreguidelines-special-member-functions,
+  -modernize-use-nodiscard,
+  -readability-named-parameter,
+  -readability-function-cognitive-complexity,
+  -readability-else-after-return,
+  -bugprone-narrowing-conversions,
+  -cppcoreguidelines-pro-type-static-cast-downcast,
+  -bugprone-reserved-identifier
+WarningsAsErrors: ''
+HeaderFilterRegex: '^(?!.*(boost|std|bits|x86_64|c\+\+/|include/c++)).*$'
+FormatStyle: file
+User: moba-sim
+CheckOptions:
+  readability-identifier-naming.NamespaceCase: lower_case
+  readability-identifier-naming.ClassCase: CamelCase
+  readability-identifier-naming.StructCase: CamelCase
+  readability-identifier-naming.EnumCase: CamelCase
+  readability-identifier-naming.EnumConstantCase: CamelCase
+  readability-identifier-naming.FunctionCase: camelBack
+  readability-identifier-naming.VariableCase: camelBack
+  readability-identifier-naming.ParameterCase: lower_case
+  readability-identifier-naming.ConstantParameterCase: lower_case
+  readability-identifier-naming.PrivateMemberSuffix: '_'
+  readability-identifier-naming.ProtectedMemberSuffix: '_'
+  readability-identifier-naming.ConstexprVariableCase: CamelCase
+  readability-identifier-naming.ConstexprFunctionCase: camelBack
+  readability-identifier-naming.StaticConstantCase: UPPER_CASE
+  readability-identifier-naming.TypeAliasCase: CamelCase
+  readability-braces-around-statements.ShortStatementOnSingleLine: true
+  readability-suspicious-call-argument.MinimumLength: 2
+  readability-simplify-boolean-entries.SimplifyDeMorgan: true
+  modernize-loop-convert.UseCxx20ReverseIterators: true
+  modernize-replace-auto-ptr.IncludeStyle: llvm
+  performance-unnecessary-value-param.AllowedTypes: 'string_view;Type'
+  bugprone-assert-side-effect.AssertionArgOrderedList: 'assert'
+  bugprone-assert-side-effect.CheckMacroName: 'assert'
+  bugprone-argument-comment.StrictMode: true
+  bugprone-argument-comment.CommentInlineASCII: true
+  cert-err61-cpp.TreatokOnInit::CatchWeight: 20
