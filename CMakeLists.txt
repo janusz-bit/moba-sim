@@ -34,3 +34,10 @@ if(WIN32)
   set(CMAKE_FIND_LIBRARY_SUFFIXES ".lib" ".dll")
   target_link_options(moba-sim PRIVATE -static-libgcc -static-libstdc++)
 endif()
+
+enable_testing()
+
+add_executable(moba-sim-tests test/basic_test.cpp)
+target_include_directories(moba-sim-tests PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_link_libraries(moba-sim-tests PRIVATE Boost::headers)
+add_test(NAME moba-tests COMMAND moba-sim-tests)
