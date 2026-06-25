@@ -1,5 +1,4 @@
-#ifndef MOBA_UNITS_HPP
-#define MOBA_UNITS_HPP
+#pragma once
 
 #include <cstdint>
 #include <functional>
@@ -47,5 +46,3 @@ public:
 class Alive : public Resistances, public WithHP {};
 
 } // namespace moba
-
-#endif // MOBA_UNITS_HPP

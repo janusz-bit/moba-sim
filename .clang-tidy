@@ -24,7 +24,8 @@ Checks: >
   -readability-else-after-return,
   -bugprone-narrowing-conversions,
   -cppcoreguidelines-pro-type-static-cast-downcast,
-  -bugprone-reserved-identifier
+  -bugprone-reserved-identifier,
+  -portability-avoid-pragma-once
 WarningsAsErrors: ''
 HeaderFilterRegex: '^(?!.*(boost|std|bits|x86_64|c\+\+/|include/c++)).*$'
 FormatStyle: file
