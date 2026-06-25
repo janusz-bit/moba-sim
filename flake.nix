@@ -75,10 +75,11 @@
             clang-tidy = {
               enable = true;
               types_or = lib.mkForce [ "c++" ];
-              # Point clang-tidy at the CMake-generated compile database and let
-              # the project-level .clang-tidy file drive the check selection.
+              # -p build uses the compile database when available; --extra-arg
+              # adds the project include dir so the hook also works in the Nix
+              # sandbox where build/ is absent.
               entry = lib.mkForce
-                "${pkgs.clang-tools}/bin/clang-tidy -p build";
+                "${pkgs.clang-tools}/bin/clang-tidy -p build --extra-arg=-Iinclude";
               pass_filenames = true;
             };
             end-of-file-fixer.enable = true;

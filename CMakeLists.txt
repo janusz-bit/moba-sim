@@ -26,6 +26,7 @@ message(STATUS "Boost ${Boost_VERSION} found at ${Boost_DIR}")
 add_executable(moba-sim
   src/main.cpp
 )
+target_include_directories(moba-sim PRIVATE ${CMAKE_SOURCE_DIR}/include)
 target_link_libraries(moba-sim PRIVATE Boost::headers)
 
 # Windows-specific: static link runtime to avoid DLL dependencies
