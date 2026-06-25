@@ -2,6 +2,7 @@
 /build
 /build-windows
 /result
+/__*
 
 # Generated for clangd/Zed
 /compile_commands.json
