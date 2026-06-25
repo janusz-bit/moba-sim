@@ -64,6 +64,34 @@
               cat $out
               grep -q "Hello from moba-sim!" $out
             '';
+
+          buildTests =
+            stdenv:
+            stdenv.mkDerivation {
+              name = "moba-sim-tests";
+              src = ./.;
+              nativeBuildInputs = [
+                pkgs.cmake
+                pkgs.ninja
+              ];
+              buildInputs = [
+                pkgs.boost
+              ];
+              cmakeFlags = [
+                "-G"
+                "Ninja"
+              ];
+              doCheck = true;
+              checkPhase = ''
+                ctest --output-on-failure
+              '';
+              installPhase = ''
+                runHook preInstall
+                mkdir -p $out/bin
+                cp -v moba-sim-tests $out/bin/
+                runHook postInstall
+              '';
+            };
         in
         {
           pre-commit.settings.hooks = {
@@ -76,10 +104,10 @@
               enable = true;
               types_or = lib.mkForce [ "c++" ];
               # -p build uses the compile database when available; --extra-arg
-              # adds the project include dir so the hook also works in the Nix
-              # sandbox where build/ is absent.
+              # adds project and Boost include dirs so the hook also works in
+              # the Nix sandbox where build/ is absent.
               entry = lib.mkForce
-                "${pkgs.clang-tools}/bin/clang-tidy -p build --extra-arg=-Iinclude";
+                "${pkgs.clang-tools}/bin/clang-tidy -p build --extra-arg=-Iinclude --extra-arg=-I${pkgs.lib.getDev pkgs.boost}/include";
               pass_filenames = true;
             };
             end-of-file-fixer.enable = true;
@@ -89,11 +117,13 @@
           packages = {
             default = buildCpp pkgs.clangStdenv;
             windows = buildCpp pkgs.pkgsCross.mingwW64.stdenv;
+            tests = buildTests pkgs.clangStdenv;
           };
 
           checks = {
             linux = runCheck "linux" "${self'.packages.default}/bin/moba-sim";
             windows = runCheck "windows-exe" "${windowsPkgs.stdenv.hostPlatform.emulator windowsPkgs.buildPackages} ${self'.packages.windows}/bin/moba-sim.exe";
+            tests = buildTests pkgs.clangStdenv;
           };
 
           devShells.default = pkgs.mkShell.override { stdenv = pkgs.clangStdenv; } {
