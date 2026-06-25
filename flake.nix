@@ -103,6 +103,10 @@
             clang-tidy = {
               enable = true;
               types_or = lib.mkForce [ "c++" ];
+              # Exclude test files: Boost.Test macros generate snake_case names
+              # that trip readability-identifier-naming, which can't be fixed
+              # without abandoning the macro idiom.
+              excludes = [ "^test/" ];
               # -p build uses the compile database when available; --extra-arg
               # adds project and Boost include dirs so the hook also works in
               # the Nix sandbox where build/ is absent.
