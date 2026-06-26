@@ -2,47 +2,60 @@
 
 #include <cstdint>
 #include <functional>
+#include <numeric>
+#include <utility>
 #include <variant>
+#include <vector>
 
 namespace moba {
 using Type = double;
 
 class Alive;
 
-enum class KindDamage : std::int8_t {
+[[nodiscard]] Type calculateReduction(Type resistances) {
+  if (resistances >= 0.0) {
+    return (100.0 / (100.0 + resistances));
+  } else {
+    return (2.0 - (100.0 / (100.0 - resistances)));
+  }
+}
+
+enum class TypeDamage : std::uint8_t {
   Physical,
   Magic,
   True,
+  Size,
+};
+
+enum class KindDamage : std::uint8_t {
+  AutoAttack,
+  OnHit,
+  Spell,
+  Size,
 };
 
 struct DamageBase {
-  using FnType = std::function<Type(const Alive &)>;
+  using FnType = std::function<Type(Alive &)>;
   using Source = std::variant<Type, FnType>;
 
   Source amount;
+  TypeDamage type{};
   KindDamage kind{};
 };
 
-class Resistances {
-  Type magic_resistance_{0};
-  Type armor_{0};
+using Numbers = std::vector<Type>;
 
-public:
-  [[nodiscard]] auto getMagicResistance() const -> Type {
-    return magic_resistance_;
-  }
-  [[nodiscard]] auto getArmor() const -> Type { return armor_; }
+struct Additive {
+  Numbers numbers;
+  [[nodiscard]] Type operator()() { return std::reduce(numbers.begin(), numbers.end()); };
+};
+struct Multiplitive {
+  Numbers numbers;
+  [[nodiscard]] Type operator()() {
+    return std::reduce(numbers.begin(), numbers.end(), 1.0, std::multiplies<>{});
+  };
 };
 
-class WithHP {
-  Type max_health_{100};
-  Type current_health_{max_health_};
-
-public:
-  [[nodiscard]] auto maxHp() const -> Type { return max_health_; }
-  [[nodiscard]] auto currentHp() const -> Type { return current_health_; }
-};
-
-class Alive : public Resistances, public WithHP {};
+struct EquationDamage {};
 
 } // namespace moba
