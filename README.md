@@ -30,6 +30,7 @@ file result/bin/moba-sim.exe   # PE32+ executable
 | `nix build .#windows` | Cross-compile Windows `.exe` (MinGW-w64) |
 | `nix flake check` | Validate flake outputs + run Wine test of `.exe` |
 | `nix flake update` | Update flake inputs |
+| `nix develop -c pre-commit run --all-files` | Run all pre-commit hooks on every file |
 | `./build.sh` | Regenerate `compile_commands.json` (Linux toolchain) |
 | `./build.sh windows` | Regenerate `compile_commands.json` (mingw toolchain) |
 
