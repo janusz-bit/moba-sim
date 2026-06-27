@@ -32,7 +32,7 @@
           windowsPkgs = pkgs.pkgsCross.mingwW64;
 
           buildCpp =
-            stdenv:
+            { pkgs, stdenv }:
             stdenv.mkDerivation {
               inherit name;
               src = ./.;
@@ -66,7 +66,7 @@
             '';
 
           buildTests =
-            stdenv:
+            { pkgs, stdenv }:
             stdenv.mkDerivation {
               name = "moba-sim-tests";
               src = ./.;
@@ -119,15 +119,15 @@
           };
 
           packages = {
-            default = buildCpp pkgs.clangStdenv;
-            windows = buildCpp pkgs.pkgsCross.mingwW64.stdenv;
-            tests = buildTests pkgs.clangStdenv;
+            default = buildCpp { inherit pkgs; stdenv = pkgs.clangStdenv; };
+            windows = buildCpp { pkgs = pkgs.pkgsCross.mingwW64; stdenv = pkgs.pkgsCross.mingwW64.stdenv; };
+            tests = buildTests { inherit pkgs; stdenv = pkgs.clangStdenv; };
           };
 
           checks = {
             linux = runCheck "linux" "${self'.packages.default}/bin/moba-sim";
             windows = runCheck "windows-exe" "${windowsPkgs.stdenv.hostPlatform.emulator windowsPkgs.buildPackages} ${self'.packages.windows}/bin/moba-sim.exe";
-            tests = buildTests pkgs.clangStdenv;
+            tests = buildTests { inherit pkgs; stdenv = pkgs.clangStdenv; };
           };
 
           devShells.default = pkgs.mkShell.override { stdenv = pkgs.clangStdenv; } {

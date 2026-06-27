@@ -61,4 +61,8 @@ struct EquationDamage {
   };
 };
 
+class Champion {
+  Type hp, hp_max, ad, ap, armor_ad, armor_ap, attack_speed, cdr, hp_regen;
+};
+
 } // namespace moba
