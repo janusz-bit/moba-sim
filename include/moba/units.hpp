@@ -59,10 +59,30 @@ struct EquationDamage {
             (true_dmg() * true_dmg_m())) *
            dmg_m();
   };
+  void operator+=(const EquationDamage &other) {
+    ap_dmg.numbers.insert(
+      ap_dmg.numbers.end(), other.ap_dmg.numbers.begin(), other.ap_dmg.numbers.end());
+    ad_dmg.numbers.insert(
+      ad_dmg.numbers.end(), other.ad_dmg.numbers.begin(), other.ad_dmg.numbers.end());
+    true_dmg.numbers.insert(
+      true_dmg.numbers.end(), other.true_dmg.numbers.begin(), other.true_dmg.numbers.end());
+    ap_dmg_m.numbers.insert(
+      ap_dmg_m.numbers.end(), other.ap_dmg_m.numbers.begin(), other.ap_dmg_m.numbers.end());
+    ad_dmg_m.numbers.insert(
+      ad_dmg_m.numbers.end(), other.ad_dmg_m.numbers.begin(), other.ad_dmg_m.numbers.end());
+    true_dmg_m.numbers.insert(
+      true_dmg_m.numbers.end(), other.true_dmg_m.numbers.begin(), other.true_dmg_m.numbers.end());
+    non_true_dmg_m.numbers.insert(non_true_dmg_m.numbers.end(),
+                                  other.non_true_dmg_m.numbers.begin(),
+                                  other.non_true_dmg_m.numbers.end());
+    dmg_m.numbers.insert(
+      dmg_m.numbers.end(), other.dmg_m.numbers.begin(), other.dmg_m.numbers.end());
+  };
 };
 
-class Champion {
-  Type hp, hp_max, ad, ap, armor_ad, armor_ap, attack_speed, cdr, hp_regen;
+struct Champion {
+  Type hp{hp_max}, hp_max{100}, ad{50}, ap{}, armor_ad{}, armor_ap{}, attack_speed{}, cdr{},
+    hp_regen{}, mana{100}, mana_max{};
 };
 
 } // namespace moba
