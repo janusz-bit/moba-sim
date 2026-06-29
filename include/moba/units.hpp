@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <cstdint>
 #include <functional>
 #include <numeric>
@@ -32,28 +33,50 @@ enum class KindDamage : std::uint8_t {
 
 using Numbers = std::vector<Type>;
 
+template <typename T>
+struct Additive;
+
+template <typename T>
+struct Multiplitive;
+
+template <typename T>
 struct Additive {
-  Numbers numbers;
+  std::vector<T> numbers;
   [[nodiscard]] Type operator()() {
     if (numbers.size() == 0) {
       return 0;
     }
     return std::reduce(numbers.begin(), numbers.end());
   };
+  auto operator*(this const auto &self, const Multiplitive<T> &a) {
+    std::vector<T> result;
+    std::transform(self.numbers.begin(), self.numbers.end(), result.begin(), [](const T &input) {
+      return input.a();
+    });
+    return result;
+  }
 };
+
+template <typename T>
 struct Multiplitive {
-  Numbers numbers;
+  std::vector<T> numbers;
   [[nodiscard]] Type operator()() {
     if (numbers.size() == 0) {
       return 1;
     }
     return std::reduce(numbers.begin(), numbers.end(), 1.0, std::multiplies<>{});
   };
+  auto operator*(const Multiplitive<T> &a) const {
+    Multiplitive<T> result;
+    result.numbers.insert(result.numbers.end(), numbers.begin(), numbers.end());
+    result.numbers.insert(result.numbers.end(), a.numbers.begin(), a.numbers.end());
+    return result;
+  }
 };
 
 struct EquationDamage {
-  Additive ap_dmg, ad_dmg, true_dmg;
-  Multiplitive ap_dmg_m, ad_dmg_m, true_dmg_m, non_true_dmg_m, dmg_m;
+  Additive<Type> ap_dmg{}, ad_dmg{}, true_dmg{};
+  Multiplitive<Type> ap_dmg_m{}, ad_dmg_m, true_dmg_m, non_true_dmg_m, dmg_m;
   [[nodiscard]] Type operator()() {
     return ((((ap_dmg() * ap_dmg_m()) + (ad_dmg() * ad_dmg_m())) * non_true_dmg_m()) +
             (true_dmg() * true_dmg_m())) *
