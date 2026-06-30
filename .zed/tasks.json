@@ -1,0 +1,74 @@
+[
+  {
+    "label": "nix build (Linux)",
+    "command": "nix",
+    "args": ["build", ".#default", "--out-link", "result"],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "env": {},
+    "use_new_terminal": true,
+    "reveal": "always"
+  },
+  {
+    "label": "nix build (Windows .exe)",
+    "command": "nix",
+    "args": ["build", ".#windows"],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "env": {},
+    "use_new_terminal": true,
+    "reveal": "always"
+  },
+  {
+    "label": "nix build tests",
+    "command": "nix",
+    "args": ["build", ".#tests", "--out-link", "result-tests"],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "env": {},
+    "use_new_terminal": true,
+    "reveal": "always"
+  },
+  {
+    "label": "nix flake check",
+    "command": "nix",
+    "args": ["flake", "check"],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "env": {},
+    "use_new_terminal": true,
+    "reveal": "always"
+  },
+  {
+    "label": "regenerate compile_commands.json (Linux)",
+    "command": "./build.sh",
+    "args": [],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "env": {},
+    "use_new_terminal": true,
+    "reveal": "always"
+  },
+  {
+    "label": "regenerate compile_commands.json (Windows)",
+    "command": "./build.sh",
+    "args": ["windows"],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "env": {},
+    "use_new_terminal": true,
+    "reveal": "always"
+  },
+  {
+    "label": "pre-commit run --all-files",
+    "command": "nix",
+    "args": ["develop", "-c", "pre-commit", "run", "--all-files"],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "env": {},
+    "use_new_terminal": true,
+    "reveal": "always"
+  },
+  {
+    "label": "run moba-sim",
+    "command": "./result/bin/moba-sim",
+    "args": [],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "env": {},
+    "use_new_terminal": true,
+    "reveal": "always"
+  }
+]

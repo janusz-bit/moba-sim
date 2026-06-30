@@ -1,0 +1,26 @@
+[
+  {
+    "label": "Debug moba-sim (CodeLLDB)",
+    "build": {
+      "command": "nix",
+      "args": ["build", ".#default", "--out-link", "result"],
+      "cwd": "$ZED_WORKTREE_ROOT"
+    },
+    "program": "$ZED_WORKTREE_ROOT/result/bin/moba-sim",
+    "request": "launch",
+    "adapter": "CodeLLDB",
+    "stop_on_entry": false
+  },
+  {
+    "label": "Debug moba-sim-tests (CodeLLDB)",
+    "build": {
+      "command": "nix",
+      "args": ["build", ".#tests", "--out-link", "result-tests"],
+      "cwd": "$ZED_WORKTREE_ROOT"
+    },
+    "program": "$ZED_WORKTREE_ROOT/result-tests/bin/moba-sim-tests",
+    "request": "launch",
+    "adapter": "CodeLLDB",
+    "stop_on_entry": false
+  }
+]

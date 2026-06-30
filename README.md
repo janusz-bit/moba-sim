@@ -43,6 +43,13 @@ file result/bin/moba-sim.exe   # PE32+ executable
 ├── CMakeLists.txt     # CMake config (C++23, self-contained compile_commands.json)
 ├── build.sh           # Generate compile_commands.json for clangd
 ├── .clangd            # clangd config (diagnostics, inlay hints, completion, index)
+├── .clang-format      # clang-format style (C++23, 2-space, LLVM braces)
+├── .clang-tidy        # clang-tidy checks and naming conventions
+├── .editorconfig      # Cross-editor indentation and line-ending settings
+├── .zed/              # Zed editor config (settings, tasks, debug)
+│   ├── settings.json  # clangd binary/args, format-on-save, C++ settings
+│   ├── tasks.json     # Build, test, check, regenerate compile_commands
+│   └── debug.json     # CodeLLDB debug configurations
 ├── src/main.cpp       # Demo app detecting platform
 └── .gitignore
 ```
@@ -72,6 +79,46 @@ endif()
 This makes `compile_commands.json` self-contained — clangd resolves headers correctly whether or not it's launched from inside the nix shell. No `--query-driver` or per-editor config is needed.
 
 `.clangd` tunes diagnostics (clang-tidy checks), inlay hints, completion, and the background/standard-library index.
+
+## Editor integration — Zed
+
+[Zed](https://zed.dev) reads the project-level `.zed/` directory for settings, tasks, and debug configurations.
+
+### Setup
+
+```sh
+nix develop
+./build.sh           # generate compile_commands.json for clangd
+```
+
+Open the project in Zed — clangd automatically picks up `.clangd`, `.clang-format`, and `compile_commands.json`.
+
+### What's configured
+
+| File | Purpose |
+|---|---|
+| `.zed/settings.json` | clangd arguments, format-on-save, C++ language settings |
+| `.zed/tasks.json` | One-click tasks: build, test, check, regenerate compile_commands |
+| `.zed/debug.json` | CodeLLDB debug configurations (moba-sim, moba-sim-tests) |
+| `.editorconfig` | Cross-editor indentation, charset, line endings |
+| `.clangd` | clangd diagnostics, inlay hints, completion, background index |
+| `.clang-format` | clang-format style (C++23, 2-space, LLVM braces, 100 cols) |
+| `.clang-tidy` | clang-tidy checks and naming conventions |
+
+### Tasks
+
+Open the task runner (`cmd-T` / `ctrl-T`) to run:
+
+- `nix build (Linux)` — build the native binary
+- `nix build (Windows .exe)` — cross-compile for Windows
+- `nix build tests` — build the test binary
+- `nix flake check` — validate flake outputs
+- `regenerate compile_commands.json` — rebuild the compile database
+- `pre-commit run --all-files` — run all hooks
+
+### Debugging
+
+CodeLLDB configurations are in `.zed/debug.json`. Use `F5` or the debug panel to launch the binary with breakpoints. The build step runs `nix build` automatically before each debug session.
 
 ## How cross-compilation works
 

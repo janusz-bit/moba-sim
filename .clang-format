@@ -8,7 +8,7 @@
 BasedOnStyle: LLVM
 
 Language: Cpp
-Standard: c++20
+Standard: c++23
 
 # Indentation
 IndentWidth: 2

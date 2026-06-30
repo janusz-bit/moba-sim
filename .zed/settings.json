@@ -1,0 +1,33 @@
+{
+  "lsp": {
+    "clangd": {
+      "binary": {
+        "path": "clangd",
+        "arguments": [
+          "--background-index",
+          "--clang-tidy",
+          "--header-insertion=iwyu",
+          "--completion-style=detailed",
+          "--pch-storage=memory",
+          "--function-arg-placeholders=1"
+        ]
+      }
+    }
+  },
+  "languages": {
+    "C++": {
+      "format_on_save": "on",
+      "formatter": "language_server",
+      "tab_size": 2,
+      "preferred_line_length": 100,
+      "soft_wrap": "preferred_line_length",
+      "show_completions_on_input": true,
+      "show_completion_documentation": true,
+      "colorize_brackets": true
+    }
+  },
+  "format_on_save": "on",
+  "tab_size": 2,
+  "preferred_line_length": 100,
+  "soft_wrap": "preferred_line_length"
+}
