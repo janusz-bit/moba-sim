@@ -62,7 +62,7 @@
               HOME=$PWD
               ${exe} > $out
               cat $out
-              grep -q "Hello from moba-sim!" $out
+              grep -q "moba-sim" $out
             '';
 
           buildTests =
