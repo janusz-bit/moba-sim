@@ -8,7 +8,7 @@
 BasedOnStyle: LLVM
 
 Language: Cpp
-Standard: c++23
+Standard: Latest
 
 # Indentation
 IndentWidth: 2
@@ -91,17 +91,17 @@ DeriveLineEnding: true
 FixNamespaceComments: true
 IncludeBlocks: Preserve
 IncludeCategories:
-  - Regex: '^<boost/'
+  - Regex: "^<boost/"
     Priority: 5
-  - Regex: '^<moba/'
+  - Regex: "^<moba/"
     Priority: 3
   - Regex: '^"moba/'
     Priority: 2
   - Regex: '^"'
     Priority: 1
-  - Regex: '^<'
+  - Regex: "^<"
     Priority: 4
-IncludeIsMainRegex: '(_test)?$'
+IncludeIsMainRegex: "(_test)?$"
 KeepEmptyLinesAtTheStartOfBlocks: false
 MaxEmptyLinesToKeep: 1
 PenaltyReturnTypeOnItsOwnLine: 1000

@@ -79,17 +79,17 @@ BOOST_AUTO_TEST_CASE(moddb_get_base_from_source) {
 
 BOOST_AUTO_TEST_CASE(damage_get_final_physical_with_multiplier) {
   moba::Damage dmg;
-  dmg.physical = 100;
+  dmg.physical     = 100;
   dmg.physicalMult = 1.5;
   BOOST_TEST(dmg.getFinalPhysical() == 150.0);
 }
 
 BOOST_AUTO_TEST_CASE(damage_get_total_sums_all_types) {
   moba::Damage dmg;
-  dmg.physical = 100;
+  dmg.physical     = 100;
   dmg.physicalMult = 2.0;
-  dmg.magic = 50;
-  dmg.trueDmg = 25;
+  dmg.magic        = 50;
+  dmg.trueDmg      = 25;
   BOOST_TEST(dmg.getTotal() == 275.0);
 }
 
@@ -171,20 +171,20 @@ BOOST_AUTO_TEST_CASE(simulate_attack_magic_vs_mr) {
   attacker.stats[moba::Stat::AD] = 0;
   // Add a combat passive that deals magic damage
   attacker.combatPassives.push_back(moba::CombatOverlay{
-    "Test Magic", "",
-    [](const moba::Damage&, const moba::Damage&, const moba::Champion&, const moba::Champion&) {
+    "Test Magic",
+    "",
+    [](const moba::Damage &, const moba::Damage &, const moba::Champion &, const moba::Champion &) {
       moba::Damage delta;
       delta.magic = 100;
       return delta;
-    }
-  });
+    }});
 
   moba::Champion defender;
   defender.name = "Defender";
   defender.modDB.add(moba::Stat::Armor, moba::ModType::Base, 100, "Base");
   defender.modDB.add(moba::Stat::MR, moba::ModType::Base, 50, "Base");
   defender.stats[moba::Stat::Armor] = 100;
-  defender.stats[moba::Stat::MR] = 50;
+  defender.stats[moba::Stat::MR]    = 50;
 
   auto dmg = moba::simulateAttack(attacker, defender);
   // 100 magic, MR 50 -> 100 * (100/150) = 66.67
